@@ -41,11 +41,12 @@ async function createCabins() {
 }
 
 async function createBookings() {
-  // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
+  // Bookings need a guestsid and a cabinid. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
   const { data: guestsIds } = await supabase
     .from("guests")
     .select("id")
     .order("id");
+  console.log("{guestsIds", guestsIds);
   const allGuestIds = guestsIds.map((cabin) => cabin.id);
   const { data: cabinsIds } = await supabase
     .from("cabins")
@@ -55,11 +56,11 @@ async function createBookings() {
 
   const finalBookings = bookings.map((booking) => {
     // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
+    const cabin = cabins.at(booking.cabinid - 1);
+    const numNight = subtractDates(booking.endDate, booking.startDate);
+    const cabinPrice = numNight * (cabin.regularPrice - cabin.discount);
     const extrasPrice = booking.hasBreakfast
-      ? numNights * 15 * booking.numGuests
+      ? numNight * 15 * booking.numGuests
       : 0; // hardcoded breakfast price
     const totalPrice = cabinPrice + extrasPrice;
 
@@ -84,12 +85,12 @@ async function createBookings() {
 
     return {
       ...booking,
-      numNights,
+      numNight,
       cabinPrice,
       extrasPrice,
       totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      guestsid: allGuestIds.at(booking.guestsid - 1),
+      cabinid: allCabinIds.at(booking.cabinid - 1),
       status,
     };
   });

@@ -6,6 +6,7 @@ import Table from "../../ui/Table";
 
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
+import PropTypes from "prop-types";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -44,7 +45,7 @@ function BookingRow({
     numGuests,
     totalPrice,
     status,
-    guests: { fullName: guestName, email },
+    guests: { fullName: guestName, emailAddress },
     cabins: { name: cabinName },
   },
 }) {
@@ -60,7 +61,7 @@ function BookingRow({
 
       <Stacked>
         <span>{guestName}</span>
-        <span>{email}</span>
+        <span>{emailAddress}</span>
       </Stacked>
 
       <Stacked>
@@ -83,4 +84,7 @@ function BookingRow({
   );
 }
 
+BookingRow.propTypes = {
+  booking: PropTypes.any,
+};
 export default BookingRow;
